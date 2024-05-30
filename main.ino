@@ -62,18 +62,25 @@ BLYNK_WRITE(V2){
 
 void checkMode(){
   if(digitalRead(26)==HIGH){
+    digitalWrite(LED_BUILTIN,LOW);
     Serial.print("Entered Deep Sleep For 15 mins!");
     esp_sleep_enable_timer_wakeup(15 * MIN_TO_SEC_CONV * SEC_TO_MICROSEC_CONV);
     esp_deep_sleep_start();
     }
-  else return;
+  else{
+    digitalWrite(LED_BUILTIN,HIGH);
+    return;
+  }
 }
 
 void setup(){
+  pinMode(LED_BUILTIN,OUTPUT);
   pinMode(25,OUTPUT);
   pinMode(26,INPUT);
   pinMode(V2,INPUT);
+  digitalWrite(LED_BUILTIN,HIGH);
   digitalWrite(25,HIGH);
+  digitalWrite(26,LOW);
   Serial.begin(115200);
   Serial.println("Beginning Si1145!");
   Serial.println("Si1145 is ready!");
@@ -88,8 +95,8 @@ void setup(){
 }
 
 void loop(){
+  digitalWrite(LED_BUILTIN,HIGH);
   Blynk.run();
   timer.run();
   checkMode();
 }
-
