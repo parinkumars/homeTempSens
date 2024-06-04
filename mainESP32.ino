@@ -43,8 +43,14 @@ DHT dht(DHT_PIN,DHT_TYPE);
 BlynkTimer timer;
 
 void Panic(int i){
+    /*
+    Panic int i values > 0 yeilds board blinking led in sos pattern i times
+    Panic int i value = 0 board outputs on serial that it has pannicked and blinks onboard led in sos pattern 1 time
+    Panic int i value < 0 board outputs on serial that it has pannicked
+    */
     digitalWrite(LED_BUILTIN,LOW);
-    while(i>0){
+    if(i<=0) Serial.print("Board has panicked!");
+    while(i>=0){
         digitalWrite(LED_BUILTIN,HIGH);
         delay(100);
         digitalWrite(LED_BUILTIN,LOW);
@@ -81,6 +87,7 @@ void Panic(int i){
         delay(100);
         digitalWrite(LED_BUILTIN,LOW);
         delay(100);
+        i==1?i--:;
         i--;
         //Displays SOS sequence in the builtin led ;)
     }
