@@ -41,13 +41,58 @@ char psswd[]="<WiFi Password>";
 DHT dht(DHT_PIN,DHT_TYPE);
 BlynkTimer timer;
 
+void Panic(int i){
+    digitalWrite(LED_BUILTIN,LOW);
+    while(i>0){
+        digitalWrite(LED_BUILTIN,HIGH);
+        delay(100);
+        digitalWrite(LED_BUILTIN,LOW);
+        delay(100);
+        digitalWrite(LED_BUILTIN,HIGH);
+        delay(100);
+        digitalWrite(LED_BUILTIN,LOW);
+        delay(100);
+        digitalWrite(LED_BUILTIN,HIGH);
+        delay(100);
+        digitalWrite(LED_BUILTIN,LOW);
+        delay(100);
+        digitalWrite(LED_BUILTIN,HIGH);
+        delay(300);
+        digitalWrite(LED_BUILTIN,LOW);
+        delay(100);
+        digitalWrite(LED_BUILTIN,HIGH);
+        delay(300);
+        digitalWrite(LED_BUILTIN,LOW);
+        delay(100);
+        digitalWrite(LED_BUILTIN,HIGH);
+        delay(300);
+        digitalWrite(LED_BUILTIN,LOW);
+        delay(100);
+        digitalWrite(LED_BUILTIN,HIGH);
+        delay(100);
+        digitalWrite(LED_BUILTIN,LOW);
+        delay(100);
+        digitalWrite(LED_BUILTIN,HIGH);
+        delay(100);
+        digitalWrite(LED_BUILTIN,LOW);
+        delay(100);
+        digitalWrite(LED_BUILTIN,HIGH);
+        delay(100);
+        digitalWrite(LED_BUILTIN,LOW);
+        delay(100);
+        i--;
+        //Displays SOS sequence in the builtin led ;)
+    }
+}
+
 void readAndSendValues(){
     humidity = dht.readHumidity();
     temp = dht.readTemperature();//reads temp values in celcius
     if(isnan(humidity) || isnan(temp)){
         Serial.println("Failed to read from DHT sensor!");
-        Serial.print(humidity);
-      Serial.print(temp);
+        //Serial.print(humidity);
+        //Serial.print(temp);
+        Panic(5);
         return;
     }
     Blynk.virtualWrite(V0, temp); 
