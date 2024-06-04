@@ -86,10 +86,10 @@ void Panic(int i){
         delay(100);
         digitalWrite(LED_BUILTIN,LOW);
         delay(100);
-        i==1?i--:;
-        i--;
+        i==1?i-=2:i--;
         //Displays SOS sequence in the builtin led ;)
     }
+}
 
 void readAndSendValues(){
     humidity = dht.readHumidity();
