@@ -9,7 +9,11 @@
 #include <BlynkSimpleEsp32.h>
 #include "Arduino.h"
 #include <stdbool.h>
-
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_BMP280.h>
+#define BMP280_ADDRESS 0x76
+Adafruit_BMP280 bmp;
 
 #define BLYNK_AUTH_TOKEN "<Your Auth Token>"
 #define DHT_TYPE DHT11
@@ -30,6 +34,8 @@ if pins are arranged different in the blink setup please edit the values of thes
 
 float temp;
 float humidity;
+float pressure;
+int altitude;
 int pinVal=0;
 
 // WiFi Auth Details
@@ -95,6 +101,8 @@ void Panic(int i){
 void readAndSendValues(){
     humidity = dht.readHumidity();
     temp = dht.readTemperature();//reads temp values in celcius
+    pressure = bmp.readPressure()/100;
+    altitude = bmp.readAltitude(1010);
     if(isnan(humidity) || isnan(temp)){
         Serial.println("Failed to read from DHT sensor!");
         Panic(5);
@@ -102,6 +110,8 @@ void readAndSendValues(){
     }
     Blynk.virtualWrite(V0, temp); 
     Blynk.virtualWrite(V1, humidity);
+    Blynk.virtualWrite(V3,pressure);
+    Blynk.virtualWrite(V4,altitude);
 }
 
 /*
@@ -135,6 +145,20 @@ void setup(){
   Serial.begin(115200);
   Serial.println("Beginning Si1145!");
   Serial.println("Si1145 is ready!");
+  while ( !Serial ) delay(100);   // wait for native usb
+  Serial.println(F("BMP280 test"));
+  unsigned status;
+  status = bmp.begin(BMP280_ADDRESS);
+  if (!status) {
+    Serial.println(F("Could not find a valid BMP280 sensor, check wiring or "
+                      "try a different address!"));
+    Serial.print("SensorID was: 0x"); Serial.println(bmp.sensorID(),16);
+    Serial.print("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085\n");
+    Serial.print("   ID of 0x56-0x58 represents a BMP 280,\n");
+    Serial.print("        ID of 0x60 represents a BME 280.\n");
+    Serial.print("        ID of 0x61 represents a BME 680.\n");
+    while (1) delay(10);
+    }
   dht.begin();
   delay(1000);
   Blynk.begin(BLYNK_AUTH_TOKEN , ssid, psswd);
